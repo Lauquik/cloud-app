@@ -15,12 +15,12 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-const RedisClient = redis.createClient({url:'redis://redis.mychatapp.com:6379'});
+const RedisClient = redis.createClient({url:'redis://redis.mychatapp:6379'});
 
 async function publishMessage() {
   try {
     // Connect to RabbitMQ
-    const connection = await amqp.connect('amqp://rabbit.mychatapp.com:5672');
+    const connection = await amqp.connect('amqp://rabbit.mychatapp:5672');
     const channel = await connection.createChannel();
 
     // Create a queue
@@ -47,7 +47,7 @@ publishMessage();
 
 async function mongo(){
 
-  await mongoose.connect("mongodb://mongo.mychatapp.com:27017/chatapp")  
+  await mongoose.connect("mongodb://mongo.mychatapp:27017/chatapp")  
   .then(() => {
     console.log("connected to db");
   })
