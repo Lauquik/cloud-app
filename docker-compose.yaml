@@ -1,0 +1,38 @@
+version: '3'
+services:
+  redis:
+    image: redis
+    ports:
+      - 6379:6379
+    networks:
+      - chatnet
+    hostname: redishost
+
+  mongodb:
+    image: mongo
+    ports:
+      - 27017:27017
+    networks:
+      - chatnet
+    hostname: mongohost
+
+  rabbit:
+    image: rabbitmq
+    ports:
+      - 5672:5672
+    networks:
+      - chatnet
+    hostname: rabbithost
+
+  ningx:
+    image: nginx
+    ports:
+      - 80:8080
+    networks:
+      - chatnet
+      
+networks:
+    chatnet:
+      name: chat-network
+
+
