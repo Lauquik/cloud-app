@@ -7,7 +7,7 @@ app.use(express.static(__dirname));
 
 async function consumeMessages() {
   try {
-    const connection = await amqp.connect('amqp://guest:guest@rabbit.mychatapp:5672');
+    const connection = await amqp.connect('amqp://root:root@rabbit.mychatapp:5672');
     const channel = await connection.createChannel();
 
     const queue = 'hello';

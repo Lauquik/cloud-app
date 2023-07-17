@@ -20,7 +20,7 @@ const RedisClient = redis.createClient({url:'redis://redis.mychatapp:6379'});
 async function publishMessage() {
   try {
     // Connect to RabbitMQ
-    const connection = await amqp.connect('amqp://guest:guest@rabbit.mychatapp:5672');
+    const connection = await amqp.connect('amqp://root:root@rabbit.mychatapp:5672');
     const channel = await connection.createChannel();
 
     // Create a queue
