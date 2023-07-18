@@ -1,4 +1,4 @@
-const socket = io('http://myloadbalancer-452911526.us-east-1.elb.amazonaws.com:3000')
+const socket = io('http://3.88.137.24:3000')
 const messageContainer = document.getElementById('message-container')
 const messageForm = document.getElementById('send-container')
 const messageInput = document.getElementById('message-input')
@@ -15,7 +15,7 @@ submit.addEventListener("click", () => {
     body: JSON.stringify({ username: username.value, password: password.value})
   };
 
-  fetch('http://myloadbalancer-452911526.us-east-1.elb.amazonaws.com:4000', requestOptions) 
+  fetch('http://3.88.137.24:4000', requestOptions) 
     .then(response => response.json())
     .then(data => {
       if(data.found==true){
