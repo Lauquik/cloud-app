@@ -4,7 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 const amqp = require('amqplib');
 const redis = require('redis');
-const io = require('socket.io')(3000)
+const { Server } = require('socket.io');
 
 const app = express();
 
@@ -12,12 +12,10 @@ const corsOptions = {
   origin: "*"
 };
 
-
 app.use(cors(corsOptions));
 app.use(express.json());
 
-
-const RedisClient = redis.createClient({url:'redis://redis.mychatapp:6379'});
+const RedisClient = redis.createClient({ url: 'redis://redis.mychatapp:6379' });
 
 async function publishMessage() {
   try {
@@ -46,23 +44,21 @@ async function publishMessage() {
 
 publishMessage();
 
-
-async function mongo(){
-
-  await mongoose.connect("mongodb://mongo.mychatapp:27017/chatapp")  
-  .then(() => {
-    console.log("connected to db");
-  })
-  .catch(e => {
-    console.log(e);
-  });
+async function mongo() {
+  await mongoose.connect("mongodb://mongo.mychatapp:27017/chatapp")
+    .then(() => {
+      console.log("connected to db");
+    })
+    .catch(e => {
+      console.log(e);
+    });
 
   await RedisClient.connect().
-  then(()=>{
-    console.log("reddis up and running");
-  });
+    then(() => {
+      console.log("redis up and running");
+    });
 
-}  
+}
 
 mongo();
 
@@ -73,17 +69,16 @@ const userSchema = new mongoose.Schema({
 
 const collection = mongoose.model('User', userSchema);
 
-
 async function verifyUser(userData) {
   try {
-      const user = await collection.findOne({ username: userData.username });
-      let result = {};
-      if (!user) {
-        result = { found: false };
-      } else {
-        result = { found: user.password === userData.password };
-      }
-      return result;
+    const user = await collection.findOne({ username: userData.username });
+    let result = {};
+    if (!user) {
+      result = { found: false };
+    } else {
+      result = { found: user.password === userData.password };
+    }
+    return result;
   } catch (error) {
     console.error(error);
     return { found: false };
@@ -93,8 +88,7 @@ async function verifyUser(userData) {
 app.post("/", async (req, res) => {
   try {
     const found = await RedisClient.get(req.body.username);
-    if(found!=null) {
-
+    if (found != null) {
       res.json(JSON.parse(found));
     } else {
       const verify = await verifyUser({
@@ -116,6 +110,13 @@ app.post("/", async (req, res) => {
 
 const users = {}
 
+const io = new Server(3000, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+
 io.on('connection', socket => {
   socket.on('new-user', name => {
     users[socket.id] = name
@@ -128,10 +129,8 @@ io.on('connection', socket => {
     socket.broadcast.emit('user-disconnected', users[socket.id])
     delete users[socket.id]
   })
-})
-
-
+});
 
 app.listen(4000, () => {
-  console.log("api started on 4000");
+  console.log("API started on port 4000");
 });
