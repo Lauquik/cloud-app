@@ -1,5 +1,6 @@
 const express = require("express");
 const amqp = require('amqplib');
+require('dotenv').config();
 
 const app = express();
 
@@ -7,7 +8,7 @@ app.use(express.static(__dirname));
 
 async function consumeMessages() {
   try {
-    const connection = await amqp.connect('amqp://root:root@rabbit.mychatapp:5672');
+    const connection = await amqp.connect(process.env.RABBIT_URL);
     const channel = await connection.createChannel();
 
     const queue = 'hello';

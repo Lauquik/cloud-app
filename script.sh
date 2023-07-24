@@ -13,5 +13,5 @@ cd ..
 #     echo "file does not exist"
 # fi
 
-node app.js &
+node app.js 
 
